@@ -49,7 +49,6 @@ Ready-to-use example instances are available in the `examples/` directory.
 ## Screenshots
 
 ![](examples/app_main_screen.png)
-
 ![](examples/app_result_screen.png)
 
 ## License
