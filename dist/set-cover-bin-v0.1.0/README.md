@@ -51,17 +51,6 @@ Ready-to-use example instances are available in the `examples/` directory.
 ![](examples/app_main_screen.png)
 ![](examples/app_result_screen.png)
 
-## Download and run
-
-Download the latest release archive for Linux x86_64 from the GitHub Releases page.
-
-Extract it:
-
-```bash
-tar -xzf set-cover-bin-v0.1.0-linux-x86_64.tar.gz
-cd set-cover-bin-v0.1.0
-./set-cover-bin
-
 ## License
 
 MIT
