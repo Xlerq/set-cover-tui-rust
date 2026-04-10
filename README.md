@@ -61,6 +61,7 @@ Extract it:
 tar -xzf set-cover-bin-v0.1.0-linux-x86_64.tar.gz
 cd set-cover-bin-v0.1.0
 ./set-cover-bin
+```
 
 ## License
 
