@@ -17,10 +17,12 @@ pub fn greedy_algorithm(data: &SetCoverData) -> Vec<usize> {
                 continue;
             }
 
-            let new_elements: Vec<usize> = subset.elements.iter()
-            .filter(|&&elem| !covered.contains(&elem))
-            .copied()
-            .collect();
+            let new_elements: Vec<usize> = subset
+                .elements
+                .iter()
+                .filter(|&&elem| !covered.contains(&elem))
+                .copied()
+                .collect();
 
             let new_elements_count = new_elements.len();
             if new_elements_count == 0 {
@@ -28,7 +30,12 @@ pub fn greedy_algorithm(data: &SetCoverData) -> Vec<usize> {
             }
 
             let value = new_elements_count as f64 / subset.cost as f64;
-            if value > best_value || (value == best_value && new_elements_count > best_new_elements) || (value == best_value && new_elements_count == best_new_elements && subset.cost < best_cost) {
+            if value > best_value
+                || (value == best_value && new_elements_count > best_new_elements)
+                || (value == best_value
+                    && new_elements_count == best_new_elements
+                    && subset.cost < best_cost)
+            {
                 best_value = value;
                 best_new_elements = new_elements_count;
                 best_cost = subset.cost;

@@ -1,8 +1,7 @@
-use ratatui::{prelude::*, widgets::*};
 use crate::MenuOption;
+use ratatui::{prelude::*, widgets::*};
 
-pub fn draw(frame: &mut Frame, app: &crate::App) 
-{
+pub fn draw(frame: &mut Frame, app: &crate::App) {
     // Podziel ekran na dwie części: menu (góra) i wyniki (dół)
     let chunks = Layout::default()
         .direction(Direction::Vertical)
@@ -25,8 +24,7 @@ pub fn draw(frame: &mut Frame, app: &crate::App)
         .highlight_style(Style::default().fg(Color::Yellow))
         .highlight_symbol("> ");
 
-    let selected_index = match app.selected 
-    {
+    let selected_index = match app.selected {
         MenuOption::LoadFile => 0,
         MenuOption::OptimalAlgorithm => 1,
         MenuOption::GreedyAlgorithm => 2,
@@ -38,8 +36,7 @@ pub fn draw(frame: &mut Frame, app: &crate::App)
 
     frame.render_stateful_widget(list, chunks[0], &mut state);
 
-    if let Some(ref message) = app.message 
-    {
+    if let Some(ref message) = app.message {
         let result_area = chunks[1]; // Dolna część ekranu
         let result_text = Paragraph::new(message.as_str())
             .block(Block::default().title("Wyniki").borders(Borders::ALL))

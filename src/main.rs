@@ -1,18 +1,15 @@
 use crossterm::{
-    event::{self, Event, KeyCode, KeyEventKind},
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
+    event::{self, Event, KeyCode, KeyEventKind},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use ratatui::{
-    backend::CrosstermBackend,
-    Terminal,
-};
-use std::io::{self, stdout, Write};
+use ratatui::{Terminal, backend::CrosstermBackend};
+use std::io::{self, Write, stdout};
 use std::time::Instant;
 
+mod algorithms;
 mod data;
 mod ui;
-mod algorithms;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum MenuOption {
@@ -73,11 +70,17 @@ fn main() -> io::Result<()> {
                 Ok(data) => {
                     app.data = Some(data);
                     if let Some(ref d) = app.data {
-                        let universe_adjusted: Vec<usize> = d.universe.iter().map(|&x| x + 1).collect();
-                        let subsets_adjusted: Vec<(Vec<usize>, usize)> = d.subsets.iter().map(|s| {
-                            let adjusted_elements: Vec<usize> = s.elements.iter().map(|&x| x + 1).collect();
-                            (adjusted_elements, s.cost)
-                        }).collect();
+                        let universe_adjusted: Vec<usize> =
+                            d.universe.iter().map(|&x| x + 1).collect();
+                        let subsets_adjusted: Vec<(Vec<usize>, usize)> = d
+                            .subsets
+                            .iter()
+                            .map(|s| {
+                                let adjusted_elements: Vec<usize> =
+                                    s.elements.iter().map(|&x| x + 1).collect();
+                                (adjusted_elements, s.cost)
+                            })
+                            .collect();
                         let universe_str = format!("Zbiór uniwersalny: {:?}", universe_adjusted);
                         let subsets_str = format!("Podzbiory: {:?}", subsets_adjusted);
                         app.message = Some(format!("{}\n{}", universe_str, subsets_str));
@@ -112,64 +115,84 @@ fn main() -> io::Result<()> {
                             MenuOption::Exit => MenuOption::Exit,
                         };
                     }
-                    KeyCode::Enter => {
-                        match app.selected {
-                            MenuOption::LoadFile => {
-                                app.input_mode = true;
-                            }
-                            MenuOption::OptimalAlgorithm => {
-                                if let Some(ref data) = app.data {
-                                    let start = Instant::now();
-                                    let result = algorithms::optimal_algorithm(data);
-                                    let duration = start.elapsed();
-                                    let total_cost: usize = result.iter().map(|&idx| data.subsets[idx].cost).sum();
-                                    let adjusted_indices: Vec<usize> = result.iter().map(|&idx| idx + 1).collect();
-                                    let selected_details: Vec<String> = result
-                                    .iter()
-                                    .map(|&idx| {
-                                        let adjusted_elements: Vec<usize> = data.subsets[idx].elements.iter().map(|&x| x + 1).collect();
-                                        format!("Podzbiór {}: {:?}, koszt: {}", idx + 1, adjusted_elements, data.subsets[idx].cost)
-                                    })
-                                    .collect();
-                                    app.message = Some(format!(
-                                        "Wynik optymalny:\nIndeksy: {:?}\nCałkowity koszt: {}\nCzas wykonania: {:.3} ms\n{}",
-                                        adjusted_indices,
-                                        total_cost,
-                                        duration.as_secs_f64() * 1000.0,
-                                                               selected_details.join("\n")
-                                    ));
-                                } else {
-                                    app.message = Some("Najpierw wczytaj dane!".to_string());
-                                }
-                            }
-                            MenuOption::GreedyAlgorithm => {
-                                if let Some(ref data) = app.data {
-                                    let start = Instant::now();
-                                    let result = algorithms::greedy_algorithm(data);
-                                    let duration = start.elapsed();
-                                    let total_cost: usize = result.iter().map(|&idx| data.subsets[idx].cost).sum();
-                                    let adjusted_indices: Vec<usize> = result.iter().map(|&idx| idx + 1).collect();
-                                    let selected_details: Vec<String> = result
-                                    .iter()
-                                    .map(|&idx| {
-                                        let adjusted_elements: Vec<usize> = data.subsets[idx].elements.iter().map(|&x| x + 1).collect();
-                                        format!("Podzbiór {}: {:?}, koszt: {}", idx + 1, adjusted_elements, data.subsets[idx].cost)
-                                    })
-                                    .collect();
-                                    app.message = Some(format!(
-                                        "Wynik zachłanny:\nIndeksy: {:?}\nCałkowity koszt: {}\nCzas wykonania: {:.3} ms\n{}",
-                                        adjusted_indices,
-                                        total_cost,
-                                        duration.as_secs_f64() * 1000.0,
-                                                               selected_details.join("\n")
-                                    ));
-                                } else {
-                                    app.message = Some("Najpierw wczytaj dane!".to_string());
-                                }
-                            }
-                            MenuOption::Exit => break,
+                    KeyCode::Enter => match app.selected {
+                        MenuOption::LoadFile => {
+                            app.input_mode = true;
                         }
-                    }
+                        MenuOption::OptimalAlgorithm => {
+                            if let Some(ref data) = app.data {
+                                let start = Instant::now();
+                                let result = algorithms::optimal_algorithm(data);
+                                let duration = start.elapsed();
+                                let total_cost: usize =
+                                    result.iter().map(|&idx| data.subsets[idx].cost).sum();
+                                let adjusted_indices: Vec<usize> =
+                                    result.iter().map(|&idx| idx + 1).collect();
+                                let selected_details: Vec<String> = result
+                                    .iter()
+                                    .map(|&idx| {
+                                        let adjusted_elements: Vec<usize> = data.subsets[idx]
+                                            .elements
+                                            .iter()
+                                            .map(|&x| x + 1)
+                                            .collect();
+                                        format!(
+                                            "Podzbiór {}: {:?}, koszt: {}",
+                                            idx + 1,
+                                            adjusted_elements,
+                                            data.subsets[idx].cost
+                                        )
+                                    })
+                                    .collect();
+                                app.message = Some(format!(
+                                    "Wynik optymalny:\nIndeksy: {:?}\nCałkowity koszt: {}\nCzas wykonania: {:.3} ms\n{}",
+                                    adjusted_indices,
+                                    total_cost,
+                                    duration.as_secs_f64() * 1000.0,
+                                    selected_details.join("\n")
+                                ));
+                            } else {
+                                app.message = Some("Najpierw wczytaj dane!".to_string());
+                            }
+                        }
+                        MenuOption::GreedyAlgorithm => {
+                            if let Some(ref data) = app.data {
+                                let start = Instant::now();
+                                let result = algorithms::greedy_algorithm(data);
+                                let duration = start.elapsed();
+                                let total_cost: usize =
+                                    result.iter().map(|&idx| data.subsets[idx].cost).sum();
+                                let adjusted_indices: Vec<usize> =
+                                    result.iter().map(|&idx| idx + 1).collect();
+                                let selected_details: Vec<String> = result
+                                    .iter()
+                                    .map(|&idx| {
+                                        let adjusted_elements: Vec<usize> = data.subsets[idx]
+                                            .elements
+                                            .iter()
+                                            .map(|&x| x + 1)
+                                            .collect();
+                                        format!(
+                                            "Podzbiór {}: {:?}, koszt: {}",
+                                            idx + 1,
+                                            adjusted_elements,
+                                            data.subsets[idx].cost
+                                        )
+                                    })
+                                    .collect();
+                                app.message = Some(format!(
+                                    "Wynik zachłanny:\nIndeksy: {:?}\nCałkowity koszt: {}\nCzas wykonania: {:.3} ms\n{}",
+                                    adjusted_indices,
+                                    total_cost,
+                                    duration.as_secs_f64() * 1000.0,
+                                    selected_details.join("\n")
+                                ));
+                            } else {
+                                app.message = Some("Najpierw wczytaj dane!".to_string());
+                            }
+                        }
+                        MenuOption::Exit => break,
+                    },
                     KeyCode::Char('q') => break,
                     _ => {}
                 }
