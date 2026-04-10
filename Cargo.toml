@@ -1,0 +1,10 @@
+[package]
+name = "set_cover_tui_rust"
+version = "0.1.0"
+edition = "2024"
+description = "Rust terminal application for solving the weighted set cover problem using greedy and exact algorithms."
+license = "MIT"
+
+[dependencies]
+crossterm = "0.28.1"
+ratatui = "0.29.0"
