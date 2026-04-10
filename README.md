@@ -24,27 +24,6 @@ This project is meant to showcase:
 - ratatui
 - crossterm
 
-## Repository structure
-
-```text
-.
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── examples/
-│   ├── sample_medium.txt
-│   └── sample_small.txt
-├── src/
-│   ├── algorithms.rs
-│   ├── data.rs
-│   ├── main.rs
-│   └── ui.rs
-├── .gitignore
-├── Cargo.toml
-├── LICENSE
-└── README.md
-```
-
 ## Input format
 
 The first line defines the universe:
@@ -67,62 +46,23 @@ Meaning:
 
 Ready-to-use example instances are available in the `examples/` directory.
 
-## How to run
+## Screenshots
 
-Clone the repository and enter the project directory:
-
-```bash
-git clone <your-repo-url>
-cd set-cover-tui-rust
-```
-
-Run the application:
-
-```bash
-cargo run
-```
-
-Build release binary:
-
-```bash
-cargo build --release
-```
-
-## How to use
-
-1. Start the application with `cargo run`.
-2. Choose `Load data` in the TUI.
-3. When prompted in the terminal, provide a file path, for example:
+### Main screen
 
 ```text
-examples/sample_small.txt
+examples/app_main_screen.png
 ```
 
-4. Run either:
-   - `Optimal algorithm`
-   - `Greedy algorithm`
+![Main screen](examples/app_main_screen.png)
 
-The app will display selected subsets, total cost, and execution time.
+### Result screen
 
-## Quality checks
-
-Format check:
-
-```bash
-cargo fmt --check
+```text
+examples/app_result_screen.png
 ```
 
-Linting:
-
-```bash
-cargo clippy --all-targets --all-features -- -D warnings
-```
-
-Tests:
-
-```bash
-cargo test --all-targets --all-features
-```
+![Result screen](examples/app_result_screen.png)
 
 ## License
 
